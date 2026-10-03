@@ -1,0 +1,18 @@
+pluginManagement {
+	repositories {
+		maven {
+			name = 'Fabric'
+			url = 'https://maven.fabricmc.net/'
+		}
+		mavenCentral()
+		gradlePluginPortal()
+	}
+}
+
+rootProject.name = 'mccloudbackup'
+
+// 每个 Minecraft 版本一个模块。
+// 26.1+ 的游戏已不再混淆（用的是 Mojang 官方名），而 1.21.11 及之前仍使用
+// Yarn 映射，两者无法共用同一份适配代码，所以将来新增旧版本时是新增模块，
+// 而不是在现有模块里加分支。
+include 'mc-26.3'

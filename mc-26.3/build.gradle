@@ -1,0 +1,100 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+	id 'maven-publish'
+}
+
+group = maven_group
+version = mod_version
+
+base {
+	archivesName = archives_base_name
+}
+
+repositories {
+	// Cloth Config 的 Maven
+	maven {
+		name = 'Shedaniel'
+		url = 'https://maven.shedaniel.me/'
+	}
+	// Mod Menu 的 Maven
+	maven {
+		name = 'TerraformersMC'
+		url = 'https://maven.terraformersmc.com/releases/'
+	}
+}
+
+loom {
+	splitEnvironmentSourceSets()
+
+	mods {
+		"mccloudbackup" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+
+	// 注意：Loom 1.18 移除了 modImplementation / modCompileOnly / modLocalRuntime
+	// 这些 Loom 专属配置，现在直接用 Gradle 原生的即可（Loom 会自动识别 Fabric mod）。
+	implementation "me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}"
+
+	// Mod Menu：只是给设置界面提供一个入口，缺失时 mod 依然正常工作。
+	// localRuntime = 「只在开发环境运行时加载」，不参与正式构建。
+	compileOnly "com.terraformersmc:modmenu:${modmenu_version}"
+	localRuntime "com.terraformersmc:modmenu:${modmenu_version}"
+}
+
+// ---------------------------------------------------------------------------
+// 共享核心层
+//
+// shared/java 里是纯 Java 代码（零 Minecraft 依赖），被所有版本模块共用。
+// 将来新增 mc-1.20.1 模块时，只要在它的 build.gradle 里加上同样这一行即可，
+// 核心逻辑一行都不用改。
+//
+// 约定：shared/ 下的代码必须保持 Java 17 兼容（1.20.1 用 JDK 17），
+// 不要使用 Java 21+ 的语法或 API。
+// ---------------------------------------------------------------------------
+sourceSets {
+	main {
+		// 只加给 main。client 源集编译时本来就依赖 main 的输出，
+		// 两边都加会让同一批类被编译两次、jar 里出现重复条目。
+		java.srcDir rootProject.file('shared/java')
+	}
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	// 26.3 要求 Java 25 —— Gradle 自身也必须跑在 JDK 25 上。
+	it.options.release = 25
+}
+
+java {
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+publishing {
+	publications {
+		create("mavenJava", MavenPublication) {
+			from components.java
+		}
+	}
+
+	repositories {
+	}
+}

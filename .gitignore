@@ -1,0 +1,12 @@
+.gradle/
+build/
+*/build/
+run/
+out/
+.idea/
+*.iml
+.vscode/
+
+# 冒烟测试的编译产物和输出
+tools/smoke/classes/
+tools/smoke/result.txt

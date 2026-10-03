@@ -1,0 +1,12 @@
+# 统一换行符处理，避免不同系统上 clone 下来出现满屏的 diff。
+* text=auto
+
+# gradlew 是 shell 脚本，必须保持 LF。
+# 如果被转成 CRLF，在 Linux/macOS 上执行会报 "bad interpreter: /bin/sh^M"。
+gradlew text eol=lf
+*.sh text eol=lf
+
+# 二进制文件不要做任何换行转换
+*.jar binary
+*.png binary
+*.zip binary

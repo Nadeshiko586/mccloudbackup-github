@@ -1,0 +1,28 @@
+{
+	"schemaVersion": 1,
+	"id": "mccloudbackup",
+	"version": "${version}",
+	"name": "Cloud Backup",
+	"description": "自动把单人存档备份到 WebDAV 云端，支持浏览历史快照与一键还原。",
+	"authors": [],
+	"license": "MIT",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"dev.mccb.mc263.client.McCloudBackupClient"
+		],
+		"modmenu": [
+			"dev.mccb.mc263.client.ModMenuIntegration"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*",
+		"cloth-config": "*"
+	},
+	"suggests": {
+		"modmenu": "*"
+	}
+}

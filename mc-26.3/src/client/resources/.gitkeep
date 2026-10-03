@@ -1,0 +1,6 @@
+这个文件只是为了让 Git 保留空目录。
+
+Loom 会去找 client 源集的 resources 目录，找不到就打印一条
+"Class path entries reference missing files ... the game may not load properly!"
+的警告。虽然实际不影响加载（本 mod 的 client 源集确实没有资源文件），
+但那条警告看着很吓人，留着个空目录就能消掉。
